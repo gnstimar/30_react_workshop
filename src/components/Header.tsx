@@ -4,7 +4,12 @@ import {Package} from "lucide-react";
 import {UserComponent} from "./UserComponent.tsx";
 import {MobileMenuButton} from "./MobileMenuButton.tsx";
 
-export function Header() {
+type HeaderProps = {
+    searchQuery: string;
+    onSearchChange: (query:string) => void;
+}
+
+export function Header({searchQuery, onSearchChange}:HeaderProps) {
     return (
         <header className="sticky top-0 z-40 border-b border-blue-700/30 bg-blue-600 shadow-lg shadow-blue-900/10">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -43,7 +48,7 @@ export function Header() {
                             <span className="text-[10px] font-black uppercase tracking-widest text-blue-50">Live</span>
                         </div>
 
-                        <SearchBar/>
+                        <SearchBar searchQuery={searchQuery} onSearchChange={onSearchChange}/>
 
                         <Cart/>
 
