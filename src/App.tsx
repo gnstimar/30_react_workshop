@@ -9,10 +9,22 @@ import {useState} from "react";
 import EmptyState from "./components/EmptyState.tsx";
 
 function App() {
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [categoryName, setCategoryName] = useState<string>("");
+    const [selectedCategories, setSelectedCategories] = useState([]);
 
-    const filteredProducts = products.filter(
+    const searchedProducts = products.filter(
         (product) => (product.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    )
+
+    const filteredByCategory = searchedProducts.filter(
+        (product) => {
+            if(selectedCategories.length === 0) { /* if there is 0 category chosen we want to see all products */
+                return true;
+            }
+
+            return selectedCategories.includes(product.category);
+        }
     )
 
     return (
@@ -21,15 +33,28 @@ function App() {
                 <Header searchQuery={searchQuery} onSearchChange={setSearchQuery}/>
                 <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-                        <SidebarFilters/>
+                        <SidebarFilters onFilterChange={(category, isChecked) => {
+                            if(isChecked) {
+                                setCategoryName(category);
+                                setSelectedCategories(
+                                    [...selectedCategories, category]
+                                )
+                            } else {
+                                setCategoryName(category);
+                                setSelectedCategories(
+                                    selectedCategories.filter((c)=> c !== category)
+                                )
+                            }
+                        }} filteredProducts={filteredByCategory}/>
+
                         <section className="lg:col-span-9">
                             <div
                                 className="border border-slate-200 rounded-[1.25rem] bg-slate-50/50 backdrop-blur-sm shadow-sm transition-all duration-300 hover:shadow-xl hover:border-blue-400 p-5">
-                                {filteredProducts.length === 0 ?
-                                    <EmptyState searchQuery={searchQuery} onClearSearch={()=>setSearchQuery("")} />
+                                {searchedProducts.length === 0 ?
+                                    <EmptyState searchQuery={searchQuery} onClearSearch={() => setSearchQuery("")}/>
                                     :
                                     <div>
-                                        <ProductGrid products={filteredProducts}/>
+                                        <ProductGrid products={filteredByCategory}/>
                                         <Pagination/>
                                     </div>}
                             </div>

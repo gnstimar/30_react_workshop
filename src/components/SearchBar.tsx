@@ -11,7 +11,6 @@ export function SearchBar({searchQuery, onSearchChange}: SearchBarProps) {
                     value={searchQuery} name="searchInput"
                    onChange={event => {
                        onSearchChange(event.target.value);
-                       console.log(event.target.value)
                    }}
             />
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
