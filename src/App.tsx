@@ -12,6 +12,7 @@ function App() {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [categoryName, setCategoryName] = useState<string>("");
     const [selectedCategories, setSelectedCategories] = useState([]);
+    const [selectedAvailabilities, setSelectedAvailabilities] = useState([]);
 
     const searchedProducts = products.filter(
         (product) => (product.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -19,13 +20,32 @@ function App() {
 
     const filteredByCategory = searchedProducts.filter(
         (product) => {
-            if(selectedCategories.length === 0) { /* if there is 0 category chosen we want to see all products */
+            if (selectedCategories.length === 0) { /* if there is 0 category chosen we want to see all products */
                 return true;
             }
 
             return selectedCategories.includes(product.category);
         }
     )
+
+    const filteredByAvailability = filteredByCategory.filter(
+        (product) => {
+            if (selectedAvailabilities.length === 0) { /* if there is 0 availability chosen we want to see all products */
+                return true;
+            }
+
+            if (selectedAvailabilities.includes("inStock") && product.badge.type === 'soldout') {
+                return false;
+            }
+
+            if (selectedAvailabilities.includes("onSale") && !product.oldPrice) {
+                return false;
+            }
+
+            return true;
+        }
+    )
+
 
     return (
         <>
@@ -34,7 +54,7 @@ function App() {
                 <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
                         <SidebarFilters onFilterChange={(category, isChecked) => {
-                            if(isChecked) {
+                            if (isChecked) {
                                 setCategoryName(category);
                                 setSelectedCategories(
                                     [...selectedCategories, category]
@@ -42,10 +62,23 @@ function App() {
                             } else {
                                 setCategoryName(category);
                                 setSelectedCategories(
-                                    selectedCategories.filter((c)=> c !== category)
+                                    selectedCategories.filter((c) => c !== category)
                                 )
                             }
-                        }} filteredProducts={filteredByCategory}/>
+                        }} filteredProducts={filteredByAvailability}
+                            onAvailabilityChange={(availability, isChecked) => {
+                                if (isChecked) {
+                                    setSelectedAvailabilities(
+                                        [...selectedAvailabilities, availability]
+                                    )
+                                } else {
+                                    setSelectedAvailabilities(
+                                        selectedAvailabilities.filter((a) => a !== availability)
+                                    )
+                                }
+                            }
+
+                            }/>
 
                         <section className="lg:col-span-9">
                             <div
@@ -54,7 +87,7 @@ function App() {
                                     <EmptyState searchQuery={searchQuery} onClearSearch={() => setSearchQuery("")}/>
                                     :
                                     <div>
-                                        <ProductGrid products={filteredByCategory}/>
+                                        <ProductGrid products={filteredByAvailability}/>
                                         <Pagination/>
                                     </div>}
                             </div>

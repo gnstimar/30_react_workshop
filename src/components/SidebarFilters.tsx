@@ -3,9 +3,10 @@ import type {Product} from "../types/product.ts";
 type SidebarFiltersProps = {
     onFilterChange: (query:string, isChecked: boolean) => void;
     filteredProducts: Product[]
+    onAvailabilityChange: (query:string, isChecked: boolean) => void;
 }
 
-export function SidebarFilters({ onFilterChange, filteredProducts}:SidebarFiltersProps) {
+export function SidebarFilters({ onFilterChange, filteredProducts, onAvailabilityChange}:SidebarFiltersProps) {
     const allCategory = filteredProducts.length;
     const outerWear = filteredProducts.filter(product => product.category.toLowerCase() === "outerwear").length
     const footwear = filteredProducts.filter(product => product.category.toLowerCase() === "footwear").length
@@ -102,14 +103,21 @@ export function SidebarFilters({ onFilterChange, filteredProducts}:SidebarFilter
 
                     <div className="space-y-3">
                         <label className="flex items-center gap-3 cursor-pointer select-none">
-                            <input type="checkbox"
-                                   className="h-[1.125rem] w-[1.125rem] rounded-[0.375rem] border border-slate-200 accent-blue-600 cursor-pointer"/>
+                            <input type="checkbox" value="inStock"
+                                   className="h-[1.125rem] w-[1.125rem] rounded-[0.375rem] border border-slate-200 accent-blue-600 cursor-pointer"
+                                   onChange={event => {
+                                       onAvailabilityChange(event.target.value, event.target.checked);
+
+                                   }}/>
                             <span className="flex-1 text-sm text-slate-700">In Stock</span>
                         </label>
 
                         <label className="flex items-center gap-3 cursor-pointer select-none">
-                            <input type="checkbox"
-                                   className="h-[1.125rem] w-[1.125rem] rounded-[0.375rem] border border-slate-200 accent-blue-600 cursor-pointer"/>
+                            <input type="checkbox" value="onSale"
+                                   className="h-[1.125rem] w-[1.125rem] rounded-[0.375rem] border border-slate-200 accent-blue-600 cursor-pointer"
+                                   onChange={event => {
+                                       onAvailabilityChange(event.target.value, event.target.checked);
+                                       }}/>
                             <span className="flex-1 text-sm text-slate-700">On Sale</span>
                         </label>
                     </div>
