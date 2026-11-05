@@ -25,3 +25,12 @@
 
 ## 4. How the components work together?
 Think of a component as a self-contained piece of the UI — it has its own structure, its own logic, and its own appearance. Instead of writing an entire page in one large file, we split it into small, focused components. Each component does one thing well and can be reused anywhere in the app. They are nested into each other, forming a tree. 
+
+
+# Added a few dynamic behaviors in the shop UI, such as:
+
+- a search field that filters products by name
+- category or tag filters
+- a product count that updates automatically
+- conditional rendering for empty search results
+- reusable product data rendered from an array instead of hardcoded markup
